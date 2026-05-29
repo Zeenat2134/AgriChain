@@ -1,0 +1,13 @@
+color:var(--chart-1);font-weight:bold>apiVersion: apps/v1
+2	color:var(--chart-1);font-weight:bold>kind: Deployment
+3	color:var(--chart-1);font-weight:bold>metadata:
+4	name: api
+5	color:var(--chart-1);font-weight:bold>spec:
+6	color:var(--chart-1);font-weight:bold>replicas: 2
+7	color:var(--chart-1);font-weight:bold>template:
+8	color:var(--chart-1);font-weight:bold>spec:
+9	color:var(--chart-1);font-weight:bold>containers:
+10	- name: api
+11	color:var(--chart-1);font-weight:bold>image: agrichain/api:latest
+12	color:var(--chart-1);font-weight:bold>livenessProbe:
+13	color:var(--chart-1);font-weight:bold>httpGet: {color:var(--chart-1);font-weight:bold>path: /health, color:var(--chart-1);font-weight:bold>port: 8000}

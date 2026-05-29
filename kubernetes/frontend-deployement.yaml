@@ -1,0 +1,16 @@
+color:var(--chart-1);font-weight:bold>apiVersion: apps/v1
+2	color:var(--chart-1);font-weight:bold>kind: Deployment
+3	color:var(--chart-1);font-weight:bold>metadata:
+4	name: frontend
+5	color:var(--chart-1);font-weight:bold>spec:
+6	color:var(--chart-1);font-weight:bold>replicas: 3
+7	color:var(--chart-1);font-weight:bold>selector:
+8	color:var(--chart-1);font-weight:bold>matchLabels: {app: web}
+9	color:var(--chart-1);font-weight:bold>template:
+10	color:var(--chart-1);font-weight:bold>metadata:
+11	color:var(--chart-1);font-weight:bold>labels: {app: web}
+12	color:var(--chart-1);font-weight:bold>spec:
+13	color:var(--chart-1);font-weight:bold>containers:
+14	- name: web
+15	color:var(--chart-1);font-weight:bold>image: agrichain/frontend:latest
+16	color:var(--chart-1);font-weight:bold>ports: [{containerPort: 80}]

@@ -1,0 +1,36 @@
+name: Agri-Chain CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Checkout the repository code
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    # 2. Set up Docker Buildx for container building
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    # 3. Simulate building the Frontend Container
+    - name: Build Frontend Docker Image
+      run: |
+        docker build -t agri-chain-frontend:latest ./frontend
+
+    # 4. Simulate building the Backend Container
+    - name: Build Backend Docker Image
+      run: |
+        docker build -t agri-chain-backend:latest ./backend
+
+    # 5. Validate Kubernetes Manifests Syntax
+    - name: Validate Kubernetes Manifests
+      run: |
+        docker run --rm -v ${{ github.workspace }}/kubernetes:/apps alpine/k8s-dfly:latest npx yamllint /apps/
+        echo "All Kubernetes manifests successfully validated!"

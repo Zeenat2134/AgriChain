@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agri-Chain Dashboard 🌻</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { brand: '#34d399', branddark: '#059669', bglight: '#f2fbf5', cardbg: '#ffffff' },
+                    animation: { 'float': 'float 3s ease-in-out infinite', 'pop': 'pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards', 'wiggle': 'wiggle 3s ease-in-out infinite' },
+                    keyframes: {
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+                        pop: { '0%': { opacity: '0', transform: 'scale(0.8) translateY(20px)' }, '100%': { opacity: '1', transform: 'scale(1) translateY(0)' } },
+                        wiggle: { '0%, 100%': { transform: 'rotate(-5deg) translateY(0)' }, '50%': { transform: 'rotate(5deg) translateY(-8px)' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+        body { font-family: 'Nunito', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #a7f3d0; border-radius: 20px; }
+    </style>
+</head>
+<body class="bg-bglight text-gray-700 antialiased min-h-screen flex items-center justify-center transition-all duration-500 overflow-hidden">
+
+    <div id="login-screen" class="w-full max-w-md p-8 bg-white rounded-[2rem] shadow-xl text-center animate-pop">
+        <div class="mb-6 relative inline-block">
+            <div id="auth-icon" class="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-float relative z-10 border-4 border-white shadow-lg text-5xl">🚜</div>
+            <h1 id="auth-title" class="text-3xl font-extrabold text-gray-800">Agri-Chain</h1>
+            <p id="auth-subtitle" class="text-gray-500 font-medium mt-1">Welcome back, farmer! 🌾</p>
+        </div>
+        
+        <p id="auth-error" class="text-rose-500 bg-rose-50 p-3 rounded-xl text-sm font-bold hidden mb-4 border border-rose-100"></p>
+        <p id="auth-success" class="text-branddark bg-emerald-50 p-3 rounded-xl text-sm font-bold hidden mb-4 border border-emerald-100"></p>
+
+        <form id="login-form" class="space-y-4 text-left">
+            <div>
+                <label class="block text-sm font-bold text-gray-500 mb-1 pl-2">Email Address</label>
+                <input type="email" id="login-email" required class="w-full px-5 py-3 bg-gray-50 border-2 border-emerald-50 rounded-2xl focus:outline-none focus:border-brand transition-all font-semibold" placeholder="farmer@agrichain.com">
+            </div>
+            <div>
+                <label class="block text-sm font-bold text-gray-500 mb-1 pl-2">Password</label>
+                <input type="password" id="login-password" required class="w-full px-5 py-3 bg-gray-50 border-2 border-emerald-50 rounded-2xl focus:outline-none focus:border-brand transition-all font-semibold" placeholder="••••••••">
+            </div>
+            <button type="submit" class="w-full py-4 mt-2 bg-brand hover:bg-branddark text-white font-extrabold text-lg rounded-2xl transition-all shadow-lg transform hover:-translate-y-1">
+                Hop In! ✨
+            </button>
+        </form>
+
+        <form id="register-form" class="space-y-4 text-left hidden">
+            <div>
+                <label class="block text-sm font-bold text-gray-500 mb-1 pl-2">Full Name</label>
+                <input type="text" id="reg-name" required class="w-full px-5 py-3 bg-gray-50 border-2 border-emerald-50 rounded-2xl focus:outline-none focus:border-brand transition-all font-semibold" placeholder="Your Name">
+            </div>
+            <div>
+                <label class="block text-sm font-bold text-gray-500 mb-1 pl-2">Email Address</label>
+                <input type="email" id="reg-email" required class="w-full px-5 py-3 bg-gray-50 border-2 border-emerald-50 rounded-2xl focus:outline-none focus:border-brand transition-all font-semibold" placeholder="farmer@agrichain.com">
+            </div>
+            <div>
+                <label class="block text-sm font-bold text-gray-500 mb-1 pl-2">Password</label>
+                <input type="password" id="reg-password" required minlength="6" class="w-full px-5 py-3 bg-gray-50 border-2 border-emerald-50 rounded-2xl focus:outline-none focus:border-brand transition-all font-semibold" placeholder="Create a strong password">
+            </div>
+            <button type="submit" class="w-full py-4 mt-2 bg-branddark hover:bg-emerald-800 text-white font-extrabold text-lg rounded-2xl transition-all shadow-lg transform hover:-translate-y-1">
+                Send Verification Code 📧
+            </button>
+        </form>
+
+        <form id="otp-form" class="space-y-4 text-left hidden animate-pop">
+           
+            <div>
+                <label class="block text-sm font-bold text-gray-500 mb-1 pl-2 text-center">Enter 4-Digit OTP</label>
+                <input type="text" id="reg-otp" required maxlength="4" class="w-full px-5 py-4 bg-gray-50 border-2 border-emerald-50 rounded-2xl focus:outline-none focus:border-brand transition-all font-extrabold text-center text-3xl tracking-[0.5em]" placeholder="0000">
+            </div>
+            <button type="submit" class="w-full py-4 mt-2 bg-brand hover:bg-branddark text-white font-extrabold text-lg rounded-2xl transition-all shadow-lg transform hover:-translate-y-1">
+                Verify & Login 🚀
+            </button>
+        </form>
+
+        <div id="auth-toggle-container" class="mt-6 border-t border-gray-100 pt-5">
+            <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-gray-500 hover:text-branddark font-bold transition-colors text-sm">
+                New here? Create an account 🧑‍🌾
+            </button>
+        </div>
+    </div>
+
+    <div id="dashboard-screen" class="hidden w-full h-screen flex flex-col md:flex-row p-4 md:p-6 gap-6 relative">
+        <aside class="w-full md:w-72 bg-white rounded-[2.5rem] shadow-lg h-full p-6 relative flex flex-col border border-emerald-50">
+            <div class="flex items-center gap-3 mb-6 pl-2 mt-2">
+                <div class="w-12 h-12 bg-emerald-100 rounded-2xl flex items-center justify-center text-2xl animate-float shadow-sm border-2 border-white">🌱</div>
+                <h2 class="text-2xl font-extrabold text-gray-800 tracking-tight">Agri-Chain</h2>
+            </div>
+
+            <div class="bg-gray-50 rounded-2xl p-4 mb-6 border border-gray-100 flex items-center gap-3 shadow-inner">
+                <div id="profile-initial" class="w-10 h-10 bg-brand text-white rounded-full flex items-center justify-center font-bold text-lg shadow-sm">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="overflow-hidden">
+                    <p class="text-[10px] text-gray-400 font-extrabold uppercase tracking-wider mb-0.5">Logged in as</p>
+                    <p id="profile-name" class="text-sm font-extrabold text-gray-700 truncate w-full">Loading...</p>
+                </div>
+            </div>
+
+            <nav class="space-y-3 flex-1">
+                <button id="nav-market" onclick="switchTab('market')" class="nav-btn w-full flex items-center gap-4 px-5 py-4 bg-emerald-50 text-branddark rounded-2xl font-bold transition-all shadow-sm transform scale-105 border border-emerald-100">
+                    <span class="text-2xl w-8 text-center">🛒</span> NaapTol Market
+                </button>
+                <button id="nav-inventory" onclick="switchTab('inventory')" class="nav-btn w-full flex items-center gap-4 px-5 py-4 text-gray-500 hover:bg-emerald-50/50 hover:text-brand rounded-2xl font-bold transition-all transform hover:scale-105">
+                    <span class="text-2xl w-8 text-center">🛖</span> My Barn
+                </button>
+            </nav>
+            <button onclick="logout()" class="flex items-center justify-center gap-3 w-full px-5 py-4 bg-rose-50 text-rose-500 hover:bg-rose-100 rounded-2xl font-bold transition-all hover:scale-105">
+                Logout 👋
+            </button>
+        </aside>
+
+        <main class="flex-1 bg-white rounded-[2.5rem] shadow-lg h-full p-8 overflow-y-auto custom-scrollbar relative border border-emerald-50">
+            <section id="view-market" class="view-section block">
+                <div class="flex justify-between items-end mb-10 border-b-2 border-gray-50 pb-6">
+                    <div>
+                        <h2 class="text-4xl font-extrabold text-gray-800 flex items-center gap-3">Live Market Prices <span class="animate-float inline-block">📈</span></h2>
+                        <p class="text-gray-500 mt-2 font-medium">Real-time NaapTol data tracked in MongoDB</p>
+                    </div>
+                    
+                </div>
+                <div id="market-grid" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+            </section>
+
+            <section id="view-inventory" class="view-section hidden">
+                <header class="mb-10 border-b-2 border-gray-50 pb-6">
+                    <h2 class="text-4xl font-extrabold text-gray-800 flex items-center gap-3">My Barn <span class="animate-float inline-block">🛖</span></h2>
+                    <p class="text-gray-500 mt-2 font-medium">Manage your personal stock saved in MongoDB</p>
+                </header>
+                <form id="add-inventory-form" class="bg-emerald-50/50 p-6 rounded-[2rem] mb-10 flex flex-col md:flex-row gap-4 items-end border-2 border-emerald-100 shadow-sm opacity-0 animate-pop">
+                    <div class="flex-1 w-full"><label class="block text-sm font-bold text-gray-600 mb-2 ml-2">Crop Name</label><input type="text" id="inv-name" required placeholder="e.g., Potatoes 🥔" class="w-full px-5 py-3 bg-white border-2 border-emerald-50 rounded-2xl focus:border-brand outline-none font-semibold shadow-sm"></div>
+                    <div class="w-full md:w-32"><label class="block text-sm font-bold text-gray-600 mb-2 ml-2">Qty (kg)</label><input type="number" id="inv-qty" required placeholder="0" class="w-full px-5 py-3 bg-white border-2 border-emerald-50 rounded-2xl focus:border-brand outline-none font-semibold shadow-sm"></div>
+                    <div class="w-full md:w-40"><label class="block text-sm font-bold text-gray-600 mb-2 ml-2">Price (₹/kg)</label><input type="number" step="0.01" id="inv-price" required placeholder="0.00" class="w-full px-5 py-3 bg-white border-2 border-emerald-50 rounded-2xl focus:border-brand outline-none font-semibold shadow-sm"></div>
+                    <button type="submit" class="w-full md:w-auto px-8 py-3 bg-brand hover:bg-branddark text-white font-extrabold rounded-2xl transition-all hover:-translate-y-1 hover:shadow-lg h-[52px]">Add Stock ➕</button>
+                </form>
+                <div class="overflow-hidden rounded-[2rem] border-2 border-gray-100 shadow-md opacity-0 animate-pop delay-200">
+                    <table class="w-full text-left">
+                        <thead class="bg-gray-50 text-gray-500 font-extrabold text-sm uppercase tracking-wider">
+                            <tr><th class="px-6 py-5">Crop Name</th><th class="px-6 py-5">Quantity</th><th class="px-6 py-5">Price</th><th class="px-6 py-5 text-right">Action</th></tr>
+                        </thead>
+                        <tbody id="inventory-list" class="divide-y divide-gray-100 bg-white font-semibold"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <button id="floating-ai-btn" onclick="toggleAIChat()" class="hidden fixed bottom-8 right-8 z-50 w-20 h-20 bg-white rounded-full shadow-2xl border-4 border-emerald-100 hover:scale-110 transition-transform duration-300 animate-wiggle focus:outline-none">
+        <img src="ai-doctor.jpg" alt="AI Doctor" class="w-full h-full object-cover rounded-full">
+        <span class="absolute top-0 right-0 w-5 h-5 bg-rose-400 border-2 border-white rounded-full animate-ping"></span>
+        <span class="absolute top-0 right-0 w-5 h-5 bg-rose-400 border-2 border-white rounded-full"></span>
+    </button>
+
+    <div id="ai-chat-window" class="fixed bottom-32 right-8 z-50 w-[90%] md:w-[400px] h-[600px] bg-white rounded-[2.5rem] shadow-2xl border-2 border-emerald-100 flex flex-col transition-all duration-400 transform translate-y-12 opacity-0 pointer-events-none">
+        <div class="bg-brand p-5 rounded-t-[2.5rem] flex justify-between items-center text-white shadow-md relative z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white rounded-full p-1 shadow-sm"><img src="ai-doctor.jpg" class="w-full h-full rounded-full object-cover"></div>
+                <div><h3 class="font-extrabold text-lg leading-tight">AI Doctor</h3><p class="text-xs text-emerald-100 font-semibold">Online & ready to help 🌿</p></div>
+            </div>
+            <button onclick="toggleAIChat()" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 transition-colors"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div id="ai-chat-box" class="flex-1 bg-bglight overflow-y-auto p-5 space-y-4 custom-scrollbar">
+            <div class="flex items-end gap-2 animate-pop">
+                <img src="ai-doctor.jpg" class="w-8 h-8 rounded-full border border-emerald-100 shadow-sm flex-shrink-0">
+                <div class="bg-white p-4 rounded-2xl rounded-bl-none text-gray-700 font-bold shadow-sm border border-emerald-50 max-w-[85%] text-sm">Hello! I'm your AI Crop Doctor. Tell me what's wrong with your plants!</div>
+            </div>
+        </div>
+        <form id="ai-form" class="p-4 bg-white border-t border-gray-100 rounded-b-[2.5rem] flex gap-2">
+            <input type="text" id="ai-input" autocomplete="off" required placeholder="Ask a question..." class="flex-1 px-4 py-3 bg-gray-50 border border-emerald-100 rounded-full text-gray-700 font-semibold focus:outline-none focus:border-brand focus:ring-2 focus:ring-emerald-50 transition-all text-sm">
+            <button type="submit" id="ai-btn" class="w-12 h-12 bg-brand hover:bg-branddark text-white rounded-full flex items-center justify-center transition-all hover:-translate-y-1 shadow-md flex-shrink-0"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+    </div>
+
+    <script>
+        const API_URL = 'https://agrichain-backend-3z0j.onrender.com/api';
+        let isLoginMode = true;
+        let pendingVerificationEmail = ""; 
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if(localStorage.getItem('agri_token')) showDashboard();
+        });
+
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('login-form').classList.toggle('hidden', !isLoginMode);
+            document.getElementById('register-form').classList.toggle('hidden', isLoginMode);
+            document.getElementById('otp-form').classList.add('hidden'); 
+            document.getElementById('auth-icon').innerText = isLoginMode ? '🚜' : '📝';
+            document.getElementById('auth-title').innerText = isLoginMode ? 'Agri-Chain' : 'Join Agri-Chain';
+            document.getElementById('auth-subtitle').innerText = isLoginMode ? 'Welcome back, farmer! 🌾' : 'Start your digital farming journey! 🚜';
+            document.getElementById('auth-toggle-btn').innerHTML = isLoginMode ? 'New here? Create an account 🧑‍🌾' : 'Already have an account? Log in 🔑';
+            hideAuthMessages();
+        }
+
+        function showMessage(type, text) {
+            hideAuthMessages();
+            const el = document.getElementById(`auth-${type}`);
+            el.innerText = text;
+            el.classList.remove('hidden');
+        }
+        function hideAuthMessages() {
+            document.getElementById('auth-error').classList.add('hidden');
+            document.getElementById('auth-success').classList.add('hidden');
+        }
+
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
+
+            try {
+                const response = await fetch(`${API_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, role: 'farmer' })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    pendingVerificationEmail = email; 
+                    document.getElementById('register-form').classList.add('hidden');
+                    document.getElementById('otp-form').classList.remove('hidden');
+                    document.getElementById('auth-toggle-container').classList.add('hidden');
+                    document.getElementById('auth-icon').innerText = '🔒';
+                    document.getElementById('auth-title').innerText = 'Verify Email';
+                    document.getElementById('auth-subtitle').innerText = 'Look at the green box below!';
+                    showMessage('success', data.message);
+                } else {
+                    showMessage('error', data.error || "Failed to create account.");
+                }
+            } catch (err) { showMessage('error', "Cannot connect to server. 🚨"); } 
+            finally { btn.innerHTML = 'Send Verification Code 📧'; }
+        });
+
+        document.getElementById('otp-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const otp = document.getElementById('reg-otp').value;
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Verifying...';
+
+            try {
+                const response = await fetch(`${API_URL}/auth/verify`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: pendingVerificationEmail, otp })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('agri_token', data.token);
+                    showDashboard();
+                } else {
+                    showMessage('error', data.error || "Invalid code.");
+                }
+            } catch (err) { showMessage('error', "Cannot connect to server. 🚨"); } 
+            finally { btn.innerHTML = 'Verify & Login 🚀'; }
+        });
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Loading...';
+
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('agri_token', data.token);
+                    showDashboard();
+                } else {
+                    showMessage('error', data.error || 'Invalid credentials or unverified email.');
+                }
+            } catch (err) { showMessage('error', "Backend is snoozing! 😴"); } 
+            finally { btn.innerHTML = 'Hop In! ✨'; }
+        });
+
+        function showDashboard() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('dashboard-screen').classList.remove('hidden');
+            document.getElementById('floating-ai-btn').classList.remove('hidden'); 
+            document.body.classList.remove('items-center', 'justify-center', 'bg-bglight'); 
+            document.body.classList.add('bg-gray-100'); 
+            
+            fetchUserProfile(); 
+            fetchMarketPrices(); 
+            fetchInventory();
+        }
+
+        function logout() {
+            localStorage.removeItem('agri_token');
+            window.location.reload();
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.className = "nav-btn w-full flex items-center gap-4 px-5 py-4 text-gray-500 hover:bg-emerald-50/50 hover:text-brand rounded-2xl font-bold transition-all transform hover:scale-105");
+            document.getElementById(`view-${tabName}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabName}`).className = "nav-btn w-full flex items-center gap-4 px-5 py-4 bg-emerald-50 text-branddark rounded-2xl font-bold transition-all shadow-sm transform scale-105 border border-emerald-100";
+        }
+
+        function toggleAIChat() {
+            const chatWin = document.getElementById('ai-chat-window');
+            if (chatWin.classList.contains('opacity-0')) {
+                chatWin.classList.remove('opacity-0', 'translate-y-12', 'pointer-events-none');
+                chatWin.classList.add('opacity-100', 'translate-y-0');
+            } else {
+                chatWin.classList.add('opacity-0', 'translate-y-12', 'pointer-events-none');
+                chatWin.classList.remove('opacity-100', 'translate-y-0');
+            }
+        }
+
+        async function fetchUserProfile() {
+            try {
+                const res = await fetch(`${API_URL}/auth/me`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('agri_token')}` }
+                });
+                
+                if (res.ok) {
+                    const user = await res.json();
+                    document.getElementById('profile-name').innerText = user.name;
+                    document.getElementById('profile-initial').innerText = user.name.charAt(0).toUpperCase();
+                } else {
+                    logout();
+                }
+            } catch (err) {
+                document.getElementById('profile-name').innerText = "Offline Mode";
+            }
+        }
+
+        document.getElementById('ai-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('ai-input'), box = document.getElementById('ai-chat-box'), btn = document.getElementById('ai-btn');
+            const q = input.value.trim(); if(!q) return;
+            box.innerHTML += `<div class="flex items-end justify-end gap-2 animate-pop" style="animation-fill-mode: forwards;"><div class="bg-brand p-3 rounded-2xl rounded-br-none text-white font-bold shadow-md max-w-[85%] text-sm">${q}</div></div>`;
+            input.value = ''; btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>'; btn.disabled = true; box.scrollTop = box.scrollHeight;
+            try {
+                const res = await fetch(`${API_URL}/ai/ask`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('agri_token')}` }, body: JSON.stringify({ farmerQuestion: q }) });
+                const data = await res.json();
+                box.innerHTML += `<div class="flex items-end gap-2 mt-4 opacity-0 animate-pop" style="animation-fill-mode: forwards;"><img src="ai-doctor.jpg" class="w-8 h-8 rounded-full border border-emerald-100 shadow-sm flex-shrink-0"><div class="bg-white p-4 rounded-2xl rounded-bl-none text-gray-700 font-bold shadow-md border border-emerald-50 max-w-[85%] text-sm leading-relaxed">${data.answer.replace(/\n/g, '<br>')}</div></div>`;
+            } catch (err) { box.innerHTML += `<div class="text-center text-rose-400 font-bold text-xs mt-2">Error connecting.</div>`; } 
+            finally { btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i>'; btn.disabled = false; box.scrollTop = box.scrollHeight; input.focus(); }
+        });
+
+        async function fetchMarketPrices() {
+            const grid = document.getElementById('market-grid'); grid.innerHTML = '<div class="col-span-full py-12 text-center text-brand"><i class="fa-solid fa-circle-notch fa-spin text-4xl mb-4"></i></div>';
+            try {
+                const res = await fetch(`${API_URL}/market/prices`); const prices = await res.json();
+                if(!prices.length) return grid.innerHTML = '<div class="col-span-full py-12 text-center text-gray-400 font-bold bg-gray-50 rounded-[2rem] border-2 border-dashed border-gray-200">No prices yet. Click Add Demo Data!</div>';
+                grid.innerHTML = prices.map((item, i) => `<div class="bg-white border-2 border-emerald-50 rounded-[2rem] p-6 animate-bounce-hover transition-all shadow-md group opacity-0 animate-pop" style="animation-delay: ${(i%4)*100}ms; animation-fill-mode: forwards;"><div class="flex justify-between items-start mb-6"><div><h3 class="text-xl font-extrabold text-gray-800">${item.cropName}</h3><p class="text-sm font-bold text-gray-400"><i class="fa-solid fa-map-pin text-rose-400 mr-1"></i> ${item.mandiLocation}</p></div><span class="bg-emerald-100 text-branddark font-extrabold px-3 py-1.5 rounded-xl">₹${item.price} <span class="text-xs opacity-70">/kg</span></span></div></div>`).join('');
+            } catch (err) {}
+        }
+        
+
+        async function fetchInventory() {
+            const list = document.getElementById('inventory-list');
+            try {
+                const res = await fetch(`${API_URL}/inventory/my-items`, { headers: { 'Authorization': `Bearer ${localStorage.getItem('agri_token')}` }});
+                const items = await res.json();
+                if (!items.length) return list.innerHTML = '<tr><td colspan="4" class="px-6 py-10 text-center text-gray-400 font-bold">Barn is empty!</td></tr>';
+                
+                list.innerHTML = items.map(item => `<tr class="border-b border-gray-100 hover:bg-emerald-50/50"><td class="px-6 py-4 font-extrabold text-gray-700">${item.cropName}</td><td class="px-6 py-4"><span class="bg-gray-100 px-3 py-1.5 rounded-lg text-gray-600 font-bold">${item.quantity} kg</span></td><td class="px-6 py-4 text-brand font-extrabold">₹${item.pricePerKg}</td><td class="px-6 py-4 text-right"><button onclick="deleteItem('${item.id}')" class="text-rose-400 hover:text-rose-600 hover:bg-rose-50 p-2 rounded-lg transition-all"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
+            } catch (err) {}
+        }
+        document.getElementById('add-inventory-form').addEventListener('submit', async (e) => {
+            e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); const og = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+            await fetch(`${API_URL}/inventory/add`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('agri_token')}` }, body: JSON.stringify({ cropName: document.getElementById('inv-name').value, quantity: document.getElementById('inv-qty').value, pricePerKg: document.getElementById('inv-price').value }) });
+            e.target.reset(); btn.innerHTML = og; fetchInventory(); 
+        });
+        async function deleteItem(id) {
+            await fetch(`${API_URL}/inventory/delete/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${localStorage.getItem('agri_token')}` }});
+            fetchInventory();
+        }
+    </script>
+</body>
+</html>
